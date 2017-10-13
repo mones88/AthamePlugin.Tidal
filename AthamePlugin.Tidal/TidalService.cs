@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Athame.PluginAPI;
@@ -82,6 +83,10 @@ namespace AthamePlugin.Tidal
                 case StreamingQuality.HiRes:
                 case StreamingQuality.Lossless:
                     // Bitrate doesn't really matter since it's lossless
+                    result.BitRate = -1;
+                    break;
+
+                case null:
                     result.BitRate = -1;
                     break;
 
@@ -287,7 +292,7 @@ namespace AthamePlugin.Tidal
                 client.Session = settings.Session;
                 Account = AccountInfoFromUser(settings.User);
             }
-            catch (TidalException)
+            catch (Exception)
             {
                 return Task.FromResult(false);
             }

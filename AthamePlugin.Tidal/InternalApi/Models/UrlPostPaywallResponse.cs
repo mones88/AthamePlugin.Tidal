@@ -20,7 +20,7 @@ namespace AthamePlugin.Tidal.InternalApi.Models
         public string AssetPresentation { get; set; }
 
         [JsonProperty("audioQuality")]
-        public StreamingQuality AudioQuality { get; set; }
+        public StreamingQuality? AudioQuality { get; set; }
 
         [JsonProperty("codec")]
         public TidalCodec Codec { get; set; }
