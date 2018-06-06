@@ -232,6 +232,15 @@ namespace AthamePlugin.Tidal.InternalApi
                         });
         }
 
+
+        public async Task<Dictionary<string, string[]>> GetTrackContributors(int trackId)
+        {
+            var pm = new PageManager<Contributor>(this, $"tracks/{trackId}/contributors", ItemsPerPage);
+            await pm.LoadAllPagesAsync();
+            return pm.AllItems
+                .GroupBy(contributor => contributor.Role, contributor => contributor.Name)
+                .ToDictionary(grouping => grouping.Key, grouping => grouping.ToArray());
+        }
         
 
     }

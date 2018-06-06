@@ -29,10 +29,10 @@ namespace AthamePlugin.Tidal.InternalApi.Models
         public TimeSpan? Duration { get; set; }
 
         [JsonProperty("lastUpdated")]
-        public DateTime LastUpdated { get; set; }
+        public DateTime? LastUpdated { get; set; }
 
         [JsonProperty("created")]
-        public DateTime Created { get; set; }
+        public DateTime? Created { get; set; }
 
         [JsonProperty("type")]
         public string Type { get; set; }

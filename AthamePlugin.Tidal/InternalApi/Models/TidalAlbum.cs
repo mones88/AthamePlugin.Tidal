@@ -23,7 +23,7 @@ namespace AthamePlugin.Tidal.InternalApi.Models
         public bool StreamReady { get; set; }
 
         [JsonProperty("streamStartDate")]
-        public DateTime StreamStartDate { get; set; }
+        public DateTime? StreamStartDate { get; set; }
 
         [JsonProperty("allowStreaming")]
         public bool AllowStreaming { get; set; }
@@ -41,7 +41,7 @@ namespace AthamePlugin.Tidal.InternalApi.Models
         public int NumberOfVolumes { get; set; }
 
         [JsonProperty("releaseDate")]
-        public DateTime ReleaseDate { get; set; }
+        public DateTime? ReleaseDate { get; set; }
 
         [JsonProperty("copyright")]
         public string Copyright { get; set; }

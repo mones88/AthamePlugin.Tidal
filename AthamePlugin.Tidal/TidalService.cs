@@ -201,7 +201,7 @@ namespace AthamePlugin.Tidal
             {
                 var cmTrack = track.CreateAthameTrack(settings);
                 cmTrack.Album = cmAlbum;
-                cmTrack.Year = tidalAlbum.ReleaseDate.Year;
+                cmTrack.Year = tidalAlbum.ReleaseDate?.Year ?? 0;
                 cmTracks.Add(cmTrack);
             }
             cmAlbum.Tracks = cmTracks;
