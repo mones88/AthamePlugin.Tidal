@@ -28,6 +28,7 @@ namespace AthamePlugin.Tidal
         private TidalClient client;
         private TidalServiceSettings settings = new TidalServiceSettings();
         private const string TidalWebDomain = "listen.tidal.com";
+        private const string WimpWebDomain = "play.wimpmusic.com";
 
         public TidalService()
         {
@@ -271,6 +272,7 @@ namespace AthamePlugin.Tidal
             {
                 new Uri("http://" + TidalWebDomain), new Uri("https://" + TidalWebDomain),
                 new Uri("http://tidal.com"), new Uri("https://tidal.com"),
+                new Uri("http://" + WimpWebDomain), new Uri("https://" + WimpWebDomain),
             };
 
 
