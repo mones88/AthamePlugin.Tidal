@@ -32,5 +32,16 @@ namespace AthamePlugin.Tidal.InternalApi
                 Value = quality.HasValue ? (quality.Value == StreamingQuality.HiRes).ToString() : "Undefined"
             };
         }
+
+        public static Metadata StreamingQualityMetadata(StreamingQuality? quality)
+        {
+            return new Metadata
+            {
+                CanDisplay = true,
+                IsFlag = false,
+                Name = "Quality",
+                Value = quality?.ToString() ?? "Undefined"
+            };
+        }
     }
 }

@@ -94,7 +94,8 @@ namespace AthamePlugin.Tidal.InternalApi.Models
                 CustomMetadata = new[]
                 {
                     MetadataHelpers.ExplicitMetadata(Explicit),
-                    MetadataHelpers.MasterMetadata(AudioQuality)
+                    MetadataHelpers.MasterMetadata(AudioQuality),
+                    MetadataHelpers.StreamingQualityMetadata(AudioQuality)
                 }
             };
 
