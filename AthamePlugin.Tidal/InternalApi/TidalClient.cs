@@ -12,16 +12,14 @@ namespace AthamePlugin.Tidal.InternalApi
 {
     public class TidalClient
     {
-        private const string ApiRootUrl = "https://api.tidal.com/v1/";
-        // Desktop token as at 31/05/2017
-        private const string AppToken = "4zx46pyr9o8qZNRw";
+        //        private const string ApiRootUrl = "https://api.tidal.com/v1/";
+        private const string ApiRootUrl = "https://api.tidalhifi.com/v1/";
 
-        private const string HeaderTidalToken = "X-Tidal-Token";
-        private const string HeaderTidalSession = "X-Tidal-SessionId";
-
+        // Roon token 2020
+        private const string AppToken = "Imi5DLPIAVRmszdL";
+        
         private readonly HttpClient httpClient = new HttpClient();
         private readonly List<KeyValuePair<string, string>> globalQuery = new List<KeyValuePair<string, string>>();
-        private KeyValuePair<string, string> countryCodeParam;
 
         public int ItemsPerPage { get; set; }
         private TidalSession session;
@@ -41,21 +39,15 @@ namespace AthamePlugin.Tidal.InternalApi
 
         private void UpdateClient()
         {
-            // Set country code
-            if (countryCodeParam.Key != null) globalQuery.Remove(countryCodeParam);
-            countryCodeParam = new KeyValuePair<string, string>("countryCode", session.CountryCode);
-            globalQuery.Add(countryCodeParam);
-
-            // Set session or token headers
-            if (session.SessionId != null)
+            globalQuery.Clear();
+            if (session != null)
             {
-                httpClient.DefaultRequestHeaders.Remove(HeaderTidalToken);
-                httpClient.DefaultRequestHeaders.Add(HeaderTidalSession, session.SessionId);
+                globalQuery.Add(new KeyValuePair<string, string>("countryCode", session.CountryCode));
+                globalQuery.Add(new KeyValuePair<string, string>("sessionId", session.SessionId));
             }
             else
             {
-                httpClient.DefaultRequestHeaders.Remove(HeaderTidalSession);
-                httpClient.DefaultRequestHeaders.Add(HeaderTidalToken, AppToken);
+                globalQuery.Add(new KeyValuePair<string, string>("token", AppToken));
             }
         }
 
@@ -68,7 +60,7 @@ namespace AthamePlugin.Tidal.InternalApi
 
         public TidalClient()
         {
-            session = new TidalSession {CountryCode = "WW"};
+            session = null;
             Init();
         }
 
@@ -81,16 +73,13 @@ namespace AthamePlugin.Tidal.InternalApi
 
         private string CreateQueryString(List<KeyValuePair<string, string>> requestQuery = null)
         {
-            if (requestQuery == null)
+            var allQueryStringParams = new List<KeyValuePair<string, string>>(globalQuery);
+            if (requestQuery != null)
             {
-                requestQuery = globalQuery;
-            }
-            else
-            {
-                requestQuery.AddRange(globalQuery);
+                allQueryStringParams.AddRange(requestQuery);
             }
 
-            var queryString = String.Join("&", from keyValue in requestQuery select keyValue.Key + "=" + HttpUtility.UrlEncode(keyValue.Value));
+            var queryString = String.Join("&", from keyValue in allQueryStringParams select keyValue.Key + "=" + HttpUtility.UrlEncode(keyValue.Value));
             return queryString;
         }
 
@@ -116,7 +105,10 @@ namespace AthamePlugin.Tidal.InternalApi
 
         internal async Task<T> GetAsync<T>(string path, List<KeyValuePair<string, string>> queryString = null)
         {
-            var result = JObject.Parse(await httpClient.GetStringAsync(CreatePathWithQueryString(path, queryString)));
+            var url = CreatePathWithQueryString(path, queryString);
+            var response = await httpClient.GetAsync(url);
+            var content = await response.Content.ReadAsStringAsync();
+            var result = JObject.Parse(content);
             return DeserializeOrThrow<T>(result);
         }
 
@@ -231,7 +223,6 @@ namespace AthamePlugin.Tidal.InternalApi
                             new KeyValuePair<string, string>("assetpresentation", "FULL")
                         });
         }
-
 
         public async Task<Dictionary<string, string[]>> GetTrackContributors(int trackId)
         {

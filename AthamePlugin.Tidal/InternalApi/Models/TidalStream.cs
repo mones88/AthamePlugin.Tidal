@@ -21,7 +21,7 @@ namespace AthamePlugin.Tidal.InternalApi.Models
         public string EncryptionKey { get; set; }
 
         [JsonProperty("codec")]
-        public string Codec { get; set; }
+        public TidalCodec Codec { get; set; }
     }
 
 

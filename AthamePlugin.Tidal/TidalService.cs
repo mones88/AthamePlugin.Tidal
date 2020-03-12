@@ -61,17 +61,16 @@ namespace AthamePlugin.Tidal
         {
             var response =
                 await
-                    client.GetUrlPostPaywall(Int32.Parse(track.Id), settings.StreamQuality,
-                        settings.UseOfflineUrl ? UrlUsageMode.Offline : UrlUsageMode.Stream);
+                    client.GetStreamUrlAsync(Int32.Parse(track.Id), settings.StreamQuality);
             var result = new TidalTrackFile
             {
-                DownloadUri = new Uri(response.Urls.First()),
+                DownloadUri = new Uri(response.Url),
                 Track = track
             };
             // We can assume the MIME type and bitrate from the **returned** sound quality
             // It is unwise to use the stream quality stored in settings as users with lossless
             // subscriptions will get lossy streams simply because lossless streams are unavailable
-            switch (response.AudioQuality)
+            switch (response.SoundQuality)
             {
                 case StreamingQuality.Low:
                     result.BitRate = 96 * 1000;
@@ -87,12 +86,9 @@ namespace AthamePlugin.Tidal
                     result.BitRate = -1;
                     break;
 
-                case null:
+                default:
                     result.BitRate = -1;
                     break;
-
-                default:
-                    throw new ArgumentOutOfRangeException();
             }
             switch (response.Codec)
             {
@@ -112,9 +108,9 @@ namespace AthamePlugin.Tidal
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            if (response.SecurityToken != null)
+            if (!string.IsNullOrEmpty(response.EncryptionKey))
             {
-                result.FileKey = TidalDecryptor.ParseFileKey(Convert.FromBase64String(response.SecurityToken));
+                result.FileKey = TidalDecryptor.ParseFileKey(Convert.FromBase64String(response.EncryptionKey));
             }
             return result;
         }
@@ -247,7 +243,7 @@ namespace AthamePlugin.Tidal
         }
 
         public AccountInfo Account { get; private set; }
-        public bool IsAuthenticated => client.Session.SessionId != null;
+        public bool IsAuthenticated => client.Session?.SessionId != null;
 
         public override Control GetSettingsControl()
         {
