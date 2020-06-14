@@ -15,8 +15,8 @@ namespace AthamePlugin.Tidal.InternalApi
         //        private const string ApiRootUrl = "https://api.tidal.com/v1/";
         private const string ApiRootUrl = "https://api.tidalhifi.com/v1/";
 
-        // Roon token 2020
-        private const string AppToken = "Imi5DLPIAVRmszdL";
+        // Temporary token 2020
+        private const string AppToken = "wc8j_yBJd20zOmx0";
         
         private readonly HttpClient httpClient = new HttpClient();
         private readonly List<KeyValuePair<string, string>> globalQuery = new List<KeyValuePair<string, string>>();
